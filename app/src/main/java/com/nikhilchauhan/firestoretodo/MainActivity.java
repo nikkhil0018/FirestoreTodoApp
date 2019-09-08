@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,8 +43,6 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView.LayoutManager layoutManager;
 
     FloatingActionButton fab;
-
-    AlertDialog dialog;
 
     public MaterialEditText title, description; //public so that can access from ListAdapter
 
@@ -84,15 +83,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
     }
 
 
     private void loadData() {
-//        dialog.show();
+        final ProgressDialog loading = ProgressDialog.show(MainActivity.this, "Loading Item", "Please wait...");
+        loading.show();
         if(toDoList.size()>0)
             toDoList.clear(); //Remove old value
-        db.collection("ToDoList")
+            db.collection("ToDoList")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -104,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
                             toDoList.add(todo);
                         }
                         listItem.setAdapter(adapter);
-//                        dialog.dismiss();
+                        loading.dismiss();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
