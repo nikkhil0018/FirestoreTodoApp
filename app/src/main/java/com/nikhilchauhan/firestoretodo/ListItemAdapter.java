@@ -22,8 +22,8 @@ class ListItemViewHolder extends RecyclerView.ViewHolder implements View.OnClick
         itemView.setOnClickListener(this);
         itemView.setOnCreateContextMenuListener(this);
 
-        item_title = (TextView)itemView.findViewById(R.id.item_Title);
-        item_description = (TextView)itemView.findViewById(R.id.item_Desc);
+        item_title = itemView.findViewById(R.id.item_Title);
+        item_description = itemView.findViewById(R.id.item_Desc);
     }
 
     @Override
@@ -37,7 +37,7 @@ class ListItemViewHolder extends RecyclerView.ViewHolder implements View.OnClick
 
     @Override
     public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
-        contextMenu.setHeaderTitle("Select the action");
+        contextMenu.setHeaderTitle("Are you sure?");
         contextMenu.add(0,0,getAdapterPosition(),"DELETE");
     }
 }
