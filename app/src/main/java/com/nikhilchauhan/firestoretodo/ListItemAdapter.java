@@ -72,8 +72,8 @@ public class ListItemAdapter extends  RecyclerView.Adapter<ListItemViewHolder> {
             @Override
             public void onClick(View view, int position, boolean isLongClick) {
                 //On select item, data will auto set for Edit Text View
-                mainActivity.title.setText(toDoList.get(position).getTitle());
-                mainActivity.description.setText(toDoList.get(position).getDescription());
+                mainActivity.textTitle.setText(toDoList.get(position).getTitle());
+                mainActivity.textDescription.setText(toDoList.get(position).getDescription());
 
                 mainActivity.isUpdate = true;
                 mainActivity.idUpdate = toDoList.get(position).getId();

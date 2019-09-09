@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -31,8 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import dmax.dialog.SpotsDialog;
-
 public class MainActivity extends AppCompatActivity {
 
 
@@ -44,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
     FloatingActionButton fab;
 
-    public MaterialEditText title, description; //public so that can access from ListAdapter
+    public MaterialEditText textTitle, textDescription; //public so that can access from ListAdapter
 
     public  boolean isUpdate = false; // flag to check is update or new add
     public String idUpdate=""; //id of item need to update
@@ -57,8 +54,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         db=FirebaseFirestore.getInstance();
 
-        title = (MaterialEditText) findViewById(R.id.text_Title);
-        description = (MaterialEditText) findViewById(R.id.text_Desc);
+        textTitle = (MaterialEditText) findViewById(R.id.text_Title);
+        textDescription = (MaterialEditText) findViewById(R.id.text_Desc);
         fab = (FloatingActionButton) findViewById(R.id.fab);
         listItem = (RecyclerView) findViewById(R.id.list_Todo);
         listItem.setHasFixedSize(true);
@@ -75,9 +72,13 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //Add new
                 if(!isUpdate){
-                    setData(title.getText().toString(),description.getText().toString());
+                    if ((textTitle.getText().toString().trim()).isEmpty()||(textDescription.getText().toString().trim()).isEmpty()){
+                        Toast.makeText(MainActivity.this, "Fields can't be empty", Toast.LENGTH_SHORT).show();
+                    }else{
+                    setData(textTitle.getText().toString().trim(),textDescription.getText().toString().trim());
+                    }
                 }else{
-                    updateData(title.getText().toString(),description.getText().toString());
+                    updateData(textTitle.getText().toString(),textDescription.getText().toString());
                     isUpdate=!isUpdate; //Reseting flag
                 }
             }
@@ -88,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadData() {
         final ProgressDialog loading = ProgressDialog.show(MainActivity.this, "Loading Item", "Please wait...");
+        loading.setCanceledOnTouchOutside(false);
         loading.show();
         if(toDoList.size()>0)
             toDoList.clear(); //Remove old value
@@ -127,6 +129,8 @@ public class MainActivity extends AppCompatActivity {
                 .set(todo).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
+                textTitle.setText(null);
+                textDescription.setText(null);
                 //Refresh data
                 loadData();
             }
@@ -147,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    private void updateData(String title, String description) {
+    private void updateData(final String title, final String description) {
         db.collection("ToDoList").document(idUpdate)
                 .update("title",title,"description",description)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -161,6 +165,9 @@ public class MainActivity extends AppCompatActivity {
                 .addSnapshotListener(new EventListener<DocumentSnapshot>() {
                     @Override
                     public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                        textTitle.setText(null);
+                        textDescription.setText(null);
+                        //Refresh data
                         loadData();
                     }
                 });
