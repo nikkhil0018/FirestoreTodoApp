@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        currentUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         db=FirebaseFirestore.getInstance();
 
         textTitle = findViewById(R.id.text_Title);
@@ -70,9 +69,7 @@ public class MainActivity extends AppCompatActivity {
         adapter = new ListItemAdapter(MainActivity.this,toDoList);
         listItem.setAdapter(adapter);
 
-        if (currentUserID!=null){
-            loadData(); //Load data from Firestore
-        }
+            //loadData(); //Load data from Firestore
 
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -193,11 +190,14 @@ public class MainActivity extends AppCompatActivity {
     public void onStart(){
         super.onStart();
         //If User is already logged-in
-        FirebaseUser currentUserID = FirebaseAuth.getInstance().getCurrentUser();
-        if(currentUserID==null){
+        FirebaseUser currentLoggedUser = FirebaseAuth.getInstance().getCurrentUser();
+        if(currentLoggedUser==null){
             Intent loginIntent= new Intent(this,LoginActivity.class);
             startActivity(loginIntent);
             finish();
+        }else{
+            currentUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            loadData(); //Load data from Firestore
         }
     }
 

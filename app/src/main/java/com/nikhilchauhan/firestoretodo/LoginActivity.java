@@ -120,7 +120,7 @@ public class LoginActivity extends AppCompatActivity {
             //String email = user.getEmail();
             //String photo = String.valueOf(user.getPhotoUrl());
             Toast.makeText(LoginActivity.this, "Successfully logged-in", Toast.LENGTH_SHORT).show();
-            Intent mainIntent= new Intent(this,LoginActivity.class);
+            Intent mainIntent= new Intent(LoginActivity.this,MainActivity.class);
             startActivity(mainIntent);
 
         }else{
