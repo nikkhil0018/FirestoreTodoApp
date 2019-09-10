@@ -116,10 +116,12 @@ public class LoginActivity extends AppCompatActivity {
 
     private void updateUI(FirebaseUser user){
         if(user !=null){
-            String name = user.getDisplayName();
+            //String name = user.getDisplayName();
             //String email = user.getEmail();
             //String photo = String.valueOf(user.getPhotoUrl());
-            Toast.makeText(LoginActivity.this, "Name "+name, Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginActivity.this, "Successfully logged-in", Toast.LENGTH_SHORT).show();
+            Intent mainIntent= new Intent(this,LoginActivity.class);
+            startActivity(mainIntent);
 
         }else{
             Toast.makeText(LoginActivity.this, "Authentication Failed!", Toast.LENGTH_SHORT).show();
