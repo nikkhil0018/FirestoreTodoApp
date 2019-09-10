@@ -1,7 +1,3 @@
 <resources>
     <string name="app_name">FirestoreTodo</string>
-    <string name="textView">Your phone number</string>
-    <string name="button">Send OTP</string>
-    <string name="otpTextView">Enter OTP here</string>
-    <string name="buttonok">Verify</string>
 </resources>

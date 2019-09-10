@@ -36,8 +36,7 @@ import java.util.UUID;
 public class MainActivity extends AppCompatActivity {
 
 
-    private FirebaseAuth mAuth;
-    private  String currentUserID;
+    String currentUserID;
     FirebaseFirestore db;
 
     List<ToDo> toDoList = new ArrayList<>();
@@ -58,8 +57,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mAuth = FirebaseAuth.getInstance();
-        currentUserID = mAuth.getCurrentUser().getUid();
+        currentUserID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         db=FirebaseFirestore.getInstance();
 
         textTitle = findViewById(R.id.text_Title);
@@ -72,7 +70,9 @@ public class MainActivity extends AppCompatActivity {
         adapter = new ListItemAdapter(MainActivity.this,toDoList);
         listItem.setAdapter(adapter);
 
-        loadData(); //Load data from Firestore
+        if (currentUserID!=null){
+            loadData(); //Load data from Firestore
+        }
 
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                     if ((textTitle.getText().toString().trim()).isEmpty()||(textDescription.getText().toString().trim()).isEmpty()){
                         Toast.makeText(MainActivity.this, "Fields can't be empty", Toast.LENGTH_SHORT).show();
                     }else{
-                    setData(textTitle.getText().toString().trim(),textDescription.getText().toString().trim());
+                        setData(textTitle.getText().toString().trim(),textDescription.getText().toString().trim());
                     }
                 }else{
                     updateData(textTitle.getText().toString(),textDescription.getText().toString());
@@ -96,12 +96,12 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void loadData() {
-        //final ProgressDialog loading = ProgressDialog.show(MainActivity.this, "Loading Item", "Please wait...");
-        //loading.setCanceledOnTouchOutside(false);
-        //loading.show();
+        final ProgressDialog loading = ProgressDialog.show(MainActivity.this, "Loading Item", "Please wait...");
+        loading.setCanceledOnTouchOutside(false);
+        loading.show();
         if(toDoList.size()>0)
             toDoList.clear(); //Remove old value
-            db.collection(currentUserID)
+        db.collection(currentUserID)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                             toDoList.add(todo);
                         }
                         listItem.setAdapter(adapter);
-                        //loading.dismiss();
+                        loading.dismiss();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
@@ -193,8 +193,8 @@ public class MainActivity extends AppCompatActivity {
     public void onStart(){
         super.onStart();
         //If User is already logged-in
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser==null){
+        FirebaseUser currentUserID = FirebaseAuth.getInstance().getCurrentUser();
+        if(currentUserID==null){
             Intent loginIntent= new Intent(this,LoginActivity.class);
             startActivity(loginIntent);
             finish();
